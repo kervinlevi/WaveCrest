@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="gray_50">#8037474F</color>
+
+    <color name="wave_color">#0092EA</color>
+    <color name="wave_unselected_color">#494F57</color>
+    <color name="wave_bg_color">#131719</color>
+    <color name="picker_active_color">#FFFFFF</color>
+    <color name="picker_inactive_color">#9096A3</color>
+</resources>

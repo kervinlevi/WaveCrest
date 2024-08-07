@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">WaveFormEditor</string>
+    <string name="import_file">Import file</string>
+    <string name="download">Download</string>
+    <string name="file_save_success">File %s was saved to Downloads.</string>
+    <string name="file_save_error">Failed to save file.</string>
+    <string name="discard_message">Are you sure you want to select another file?</string>
+    <string name="discard_message_yes">Yes</string>
+    <string name="discard_message_no">No</string>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="common_space_m">16dp</dimen>
+    <dimen name="common_radius">8dp</dimen>
+    <dimen name="default_wave_height">300dp</dimen>
+    <dimen name="editor_marker_knob_size">16dp</dimen>
+    <dimen name="editor_marker_thickness">2dp</dimen>
+</resources>
