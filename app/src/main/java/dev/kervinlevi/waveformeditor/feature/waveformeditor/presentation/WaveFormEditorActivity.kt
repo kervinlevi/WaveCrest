@@ -1,10 +1,13 @@
 package dev.kervinlevi.waveformeditor.feature.waveformeditor.presentation
 
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.OpenDocument
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.core.view.WindowCompat
@@ -15,10 +18,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import dev.kervinlevi.waveformeditor.R
-import dev.kervinlevi.waveformeditor.databinding.ActivityMainBinding
 import dev.kervinlevi.waveformeditor.common.domain.model.Result
+import dev.kervinlevi.waveformeditor.databinding.ActivityMainBinding
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.FileNotFoundException
 
 class WaveFormEditorActivity : AppCompatActivity() {
 
@@ -84,13 +88,49 @@ class WaveFormEditorActivity : AppCompatActivity() {
             }
 
             is Result.Failure -> {
-                Toast.makeText(
-                    this@WaveFormEditorActivity,
-                    getString(R.string.file_save_error),
-                    Toast.LENGTH_SHORT
-                ).show()
+                if (result.exception is FileNotFoundException && !hasWritePermission()) {
+                    requestWritePermissionAndDownload()
+                } else {
+                    Toast.makeText(
+                        this@WaveFormEditorActivity,
+                        getString(R.string.file_save_error),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<out String>, grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == WRITE_PERMISSION_AND_DOWNLOAD && grantResults.firstOrNull() == PERMISSION_GRANTED) {
+            downloadFile()
+        } else {
+            showFilesPermissionRationaleDialog()
+        }
+    }
+
+    private fun hasWritePermission(): Boolean {
+        return ActivityCompat.checkSelfPermission(
+            this, WRITE_EXTERNAL_STORAGE
+        ) == PERMISSION_GRANTED
+    }
+
+    private fun requestWritePermissionAndDownload() {
+        ActivityCompat.requestPermissions(
+            this, arrayOf(WRITE_EXTERNAL_STORAGE), WRITE_PERMISSION_AND_DOWNLOAD
+        )
+    }
+
+    private fun showFilesPermissionRationaleDialog() {
+        AlertDialog.Builder(this).apply {
+            setMessage(R.string.write_permission_message)
+            setPositiveButton(R.string.write_permission_button) { dialog, _ ->
+                dialog.dismiss()
+            }
+        }.show()
     }
 
     private fun createDiscardAlertDialog(yesAction: () -> Unit) {
@@ -113,6 +153,7 @@ class WaveFormEditorActivity : AppCompatActivity() {
     }
 
     companion object {
+        private const val WRITE_PERMISSION_AND_DOWNLOAD = 3000
         private val ACCEPTED_MIME_TYPES = arrayOf("text/plain")
     }
 }

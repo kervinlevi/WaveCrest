@@ -40,7 +40,7 @@ class WaveFormsLocalStorageRepository(
         }
 
     override suspend fun saveWaveFormFileToDownloads(waves: List<WavePair>): Result<String> =
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             val downloads =
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
             if (!downloads.exists()) {
@@ -48,15 +48,16 @@ class WaveFormsLocalStorageRepository(
             }
             val fileName = "trimmed_wave${Calendar.getInstance().timeInMillis}.txt"
             val file = File(downloads, fileName)
-            val outputStream = FileOutputStream(file)
+            var outputStream: FileOutputStream? = null
             try {
+                outputStream = FileOutputStream(file)
                 waves.forEach {
                     outputStream.write("${it.first} ${it.second}\n".toByteArray())
                 }
                 outputStream.close()
                 return@withContext Result.Success(file.toUri().toString())
             } catch (e: Exception) {
-                outputStream.close()
+                outputStream?.close()
                 return@withContext Result.Failure(e)
             }
         }

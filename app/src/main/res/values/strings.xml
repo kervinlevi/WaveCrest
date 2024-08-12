@@ -7,4 +7,6 @@
     <string name="discard_message">Are you sure you want to select another file?</string>
     <string name="discard_message_yes">Yes</string>
     <string name="discard_message_no">No</string>
+    <string name="write_permission_message">The app needs access to your Downloads folder. Please allow permission to continue.</string>
+    <string name="write_permission_button">Okay</string>
 </resources>
