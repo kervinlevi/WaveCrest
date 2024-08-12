@@ -30,7 +30,6 @@ class WaveFormEditorActivity : AppCompatActivity() {
 
     private val viewModel: WaveFormEditorViewModel by viewModel()
     private val openFileContract = registerForActivityResult(OpenDocument()) { uri ->
-        println("kervin9999 ${uri?.toString()}")
         viewModel.importFile(uri?.toString())
     }
 

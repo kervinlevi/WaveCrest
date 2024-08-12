@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
-import android.graphics.PointF
 import android.graphics.RectF
 import android.os.Build
 import android.util.AttributeSet
@@ -26,7 +25,6 @@ class WaveFormTrimmerView @JvmOverloads constructor(
     private var viewRect = RectF()
     private var waveRect = RectF()
 
-    private var lastTouchEvent = PointF(0f, 0f)
     private var xIncrement = 0f
     private val wavePaint by lazy {
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -142,8 +140,6 @@ class WaveFormTrimmerView @JvmOverloads constructor(
                 }
             }
         }
-        lastTouchEvent.x = event.x
-        lastTouchEvent.y = event.y
 
         computeMarkerPath()
         computeSelectedWavePath()
