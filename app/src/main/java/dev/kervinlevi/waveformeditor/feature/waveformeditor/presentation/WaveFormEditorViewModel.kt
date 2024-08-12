@@ -48,7 +48,7 @@ class WaveFormEditorViewModel(
         val state = pointsFlow.value
         return if (areMarkersValid(state.markerAIndex, state.markerBIndex, state.waves.size)) {
             _pointsFlow.value = state.copy(isLoading = true)
-            val trimmed = state.waves.subList(state.markerAIndex, state.markerBIndex)
+            val trimmed = state.waves.subList(state.markerAIndex, state.markerBIndex.inc())
             val uriResult = waveFormsRepository.saveWaveFormFileToDownloads(trimmed)
             _pointsFlow.value = state.copy(isLoading = false)
             uriResult
