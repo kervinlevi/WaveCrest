@@ -2,6 +2,7 @@ package dev.kervinlevi.waveformeditor.feature.waveformeditor.presentation
 
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.OpenDocument
@@ -22,7 +23,6 @@ import dev.kervinlevi.waveformeditor.common.domain.model.Result
 import dev.kervinlevi.waveformeditor.databinding.ActivityMainBinding
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.FileNotFoundException
 
 class WaveFormEditorActivity : AppCompatActivity() {
 
@@ -60,7 +60,11 @@ class WaveFormEditorActivity : AppCompatActivity() {
 
         downloadButton.setOnClickListener {
             viewModel.updateMarkers(binding.trimmerView.getMarkers())
-            downloadFile()
+            if (hasWritePermission()) {
+                downloadFile()
+            } else {
+                requestWritePermissionAndDownload()
+            }
         }
     }
 
@@ -87,15 +91,11 @@ class WaveFormEditorActivity : AppCompatActivity() {
             }
 
             is Result.Failure -> {
-                if (result.exception is FileNotFoundException && !hasWritePermission()) {
-                    requestWritePermissionAndDownload()
-                } else {
-                    Toast.makeText(
-                        this@WaveFormEditorActivity,
-                        getString(R.string.file_save_error),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+                Toast.makeText(
+                    this@WaveFormEditorActivity,
+                    getString(R.string.file_save_error),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
@@ -112,7 +112,7 @@ class WaveFormEditorActivity : AppCompatActivity() {
     }
 
     private fun hasWritePermission(): Boolean {
-        return ActivityCompat.checkSelfPermission(
+        return Build.VERSION.SDK_INT > Build.VERSION_CODES.P || ActivityCompat.checkSelfPermission(
             this, WRITE_EXTERNAL_STORAGE
         ) == PERMISSION_GRANTED
     }

@@ -57,6 +57,7 @@ class WaveFormsLocalStorageRepository(
                 outputStream.close()
                 return@withContext Result.Success(file.toUri().toString())
             } catch (e: Exception) {
+                // FirebaseCrashlytics.getInstance().recordException(e) // for logging the exception
                 outputStream?.close()
                 return@withContext Result.Failure(e)
             }
